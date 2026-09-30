@@ -1,52 +1,420 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" class="h-full">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta property="og:description" content=".">
-  <meta property="og:image" content="1">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="/img/heart.png">
-  <script src="main.js"></script>
-  <title>Đếm ngày yêu HD</title>
-</head>
-<body>
-  
-  <h1 class="title">ĐẾM NGÀY YÊU NHAU H-D</h1>
-
-  <div class="box">
-
-    <div class="about">
-      <div class="info">
-          <img src="img/img1.jpg" class="avatar">
-          <div class="details">
-            <p class="name">Phương Hoàng</p>
-            <p class="born">15/09/1998</p>
-          </div>
-        </div>
-
-        <div class="heart-box">
-          <img src="img/hearts.svg" class="heart">
-        </div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đếm Ngày Yêu Hoàng - Duyên</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-        <div class="info">
-          <img src="img/img2.jpg" class="avatar">
-          <div class="details">
-            <p class="name">Thuỳ Duyên</p>
-            <p class="born">28/07/2003</p>
-          </div>
+    <!-- Tailwind Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                screens: {
+                    'xs': '375px',
+                    'sm': '640px',
+                    'md': '768px',
+                    'lg': '1024px',
+                    'xl': '1280px',
+                },
+                extend: {
+                    colors: {
+                        romantic: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337',
+                        }
+                    },
+                    fontFamily: {
+                        handwriting: ['Dancing Script', 'cursive'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body id="appBody" class="theme-rose text-white min-h-screen relative flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+
+    <!-- Background Particle Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Main Container -->
+    <div class="relative z-10 w-full max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 flex-1 flex flex-col gap-6 sm:gap-8">
+
+        <header class="glass-panel-dark rounded-2xl p-3 sm:p-4 flex items-center justify-between border border-white/10 shadow-2xl">
+            <!-- Brand / Logo -->
+            <div class="flex items-center space-x-2.5 sm:space-x-3">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-rose-600 via-pink-500 to-rose-400 flex items-center justify-center text-white shadow-lg shadow-rose-500/30">
+                    <i class="fa-solid fa-heart text-lg sm:text-xl animate-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-xl tracking-tight bg-gradient-to-r from-rose-200 via-pink-100 to-white bg-clip-text text-transparent">
+                        Đếm Ngày Yêu - Hoàng <i class="fa-solid fa-heart text-rose-500"></i> Duyên
+                    </h1>
+                    <p class="text-[10px] sm:text-xs text-rose-300/70 font-medium">Hành Trình Kỷ Niệm Tình Yêu</p>
+                </div>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Audio Player Control -->
+                <button id="audioToggleBtn" onclick="toggleAudio()" title="Bật/Tắt nhạc nền" class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-rose-200 text-xs sm:text-sm font-semibold flex items-center space-x-2 transition active:scale-95">
+                    <i id="audioBtnIcon" class="fa-solid fa-music text-rose-400"></i>
+                    <span id="audioBtnLabel" class="hidden sm:inline">Bật Nhạc</span>
+                </button>
+
+                <!-- Settings Trigger -->
+                <button onclick="openSettingsModal()" title="Cài đặt web" class="px-3 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30 text-rose-200 text-xs sm:text-sm font-semibold flex items-center space-x-2 transition active:scale-95">
+                    <i class="fa-solid fa-gear text-rose-300"></i>
+                    <span class="hidden sm:inline">Cài Đặt</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="space-y-6 sm:space-y-8">
+            
+            <!-- Hero Couple Card -->
+            <section class="glass-panel-dark rounded-3xl p-4 sm:p-8 lg:p-10 relative overflow-hidden shadow-2xl border border-white/15">
+                <!-- Glowing Ambient Lights -->
+                <div class="absolute -top-32 -left-32 w-64 sm:w-96 h-64 sm:h-96 bg-rose-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-32 -right-32 w-64 sm:w-96 h-64 sm:h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <!-- Couple Profile Avatars -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 lg:gap-20 my-2 sm:my-4 relative z-10">
+                    
+                    <!-- Person 1 -->
+                    <div class="flex flex-col items-center group text-center">
+                        <div class="relative cursor-pointer">
+                            <div class="absolute -inset-1.5 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                            <img id="p1AvatarDisplay" src="images/ava1.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';" alt="Avatar 1" class="relative w-28 h-28 xs:w-32 xs:h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 rounded-full object-cover border-4 border-white/90 shadow-2xl transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                        <h2 id="p1NameDisplay" class="mt-3 sm:mt-4 text-lg sm:text-2xl font-bold text-white tracking-wide">Nam</h2>
+                        <p id="p1NickDisplay" class="text-xs sm:text-sm text-rose-300/80 font-medium">@hoangnam</p>
+                    </div>
+
+                    <!-- Heart Pulsing Connector Badge -->
+                    <div class="flex flex-col items-center justify-center my-1 sm:my-0">
+                        <div class="relative flex items-center justify-center">
+                            <div class="absolute w-14 h-14 sm:w-20 sm:h-20 bg-rose-500/30 rounded-full animate-ping"></div>
+                            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-rose-600 via-pink-500 to-rose-400 flex items-center justify-center shadow-lg shadow-rose-500/50 animate-heart-pulse text-white text-2xl sm:text-3xl border-2 border-white/80">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                        </div>
+                        <div id="startDateDisplayTag" class="mt-3 text-[11px] sm:text-xs font-semibold px-3 py-1 rounded-full bg-white/10 text-rose-200 border border-white/15 backdrop-blur-md">
+                            Bắt đầu: 14/02/2022
+                        </div>
+                    </div>
+
+                    <!-- Person 2 -->
+                    <div class="flex flex-col items-center group text-center">
+                        <div class="relative cursor-pointer">
+                            <div class="absolute -inset-1.5 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                            <img id="p2AvatarDisplay" src="images/ava2.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80';" alt="Avatar 2" class="relative w-28 h-28 xs:w-32 xs:h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 rounded-full object-cover border-4 border-white/90 shadow-2xl transition-transform duration-300 group-hover:scale-105">
+                        </div>
+                        <h2 id="p2NameDisplay" class="mt-3 sm:mt-4 text-lg sm:text-2xl font-bold text-white tracking-wide">Nữ</h2>
+                        <p id="p2NickDisplay" class="text-xs sm:text-sm text-rose-300/80 font-medium">@ngocmai</p>
+                    </div>
+
+                </div>
+
+                <!-- Main Big Total Days Display -->
+                <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                    <div class="uppercase tracking-widest text-xs sm:text-sm font-bold text-rose-300/90 mb-1">Đã Bên Nhau Độc Quyền</div>
+                    
+                    <div class="flex items-baseline justify-center gap-2 my-2">
+                        <span id="totalDaysCount" class="text-5xl xs:text-6xl sm:text-8xl font-black bg-gradient-to-r from-white via-rose-100 to-rose-300 bg-clip-text text-transparent text-glow">
+                            0
+                        </span>
+                        <span class="text-xl sm:text-3xl font-extrabold text-rose-300">NGÀY</span>
+                    </div>
+
+                    <!-- Detailed Time Units Grid -->
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4 mt-6 max-w-4xl mx-auto">
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-2.5 sm:p-3.5 backdrop-blur-md">
+                            <div id="yearsCount" class="text-lg sm:text-2xl font-extrabold text-rose-100">0</div>
+                            <div class="text-[10px] sm:text-xs uppercase font-semibold text-rose-300/70 mt-0.5">Năm</div>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-2.5 sm:p-3.5 backdrop-blur-md">
+                            <div id="monthsCount" class="text-lg sm:text-2xl font-extrabold text-rose-100">0</div>
+                            <div class="text-[10px] sm:text-xs uppercase font-semibold text-rose-300/70 mt-0.5">Tháng</div>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-2.5 sm:p-3.5 backdrop-blur-md">
+                            <div id="daysCount" class="text-lg sm:text-2xl font-extrabold text-rose-100">0</div>
+                            <div class="text-[10px] sm:text-xs uppercase font-semibold text-rose-300/70 mt-0.5">Ngày</div>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-2.5 sm:p-3.5 backdrop-blur-md">
+                            <div id="hoursCount" class="text-lg sm:text-2xl font-extrabold text-rose-100">00</div>
+                            <div class="text-[10px] sm:text-xs uppercase font-semibold text-rose-300/70 mt-0.5">Giờ</div>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-2.5 sm:p-3.5 backdrop-blur-md">
+                            <div id="minutesCount" class="text-lg sm:text-2xl font-extrabold text-rose-100">00</div>
+                            <div class="text-[10px] sm:text-xs uppercase font-semibold text-rose-300/70 mt-0.5">Phút</div>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-2.5 sm:p-3.5 backdrop-blur-md">
+                            <div id="secondsCount" class="text-lg sm:text-2xl font-extrabold text-rose-400 animate-pulse">00</div>
+                            <div class="text-[10px] sm:text-xs uppercase font-semibold text-rose-300/70 mt-0.5">Giây</div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Quote Banner -->
+                    <div class="mt-8 max-w-2xl mx-auto px-2">
+                        <div class="relative py-2 px-4 rounded-2xl bg-white/5 border border-white/10">
+                            <i class="fa-solid fa-quote-left text-rose-400/30 text-xl sm:text-2xl absolute top-2 left-3"></i>
+                            <p id="loveQuoteDisplay" class="font-handwriting text-xl sm:text-2xl lg:text-3xl text-rose-100 leading-relaxed italic px-4 py-1">
+                                "Yêu không phải là nhìn nhau, mà là cùng nhau nhìn về một hướng."
+                            </p>
+                            <i class="fa-solid fa-quote-right text-rose-400/30 text-xl sm:text-2xl absolute bottom-2 right-3"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Milestone Progress & Anniversary Section -->
+            <section class="glass-panel-dark rounded-3xl p-5 sm:p-8 shadow-xl border border-white/10">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-2xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                            <i class="fa-solid fa-flag-checkered text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base sm:text-lg font-bold text-white">Mục Tiêu & Cột Mốc Kỷ Niệm</h3>
+                            <p class="text-xs text-rose-300/70">Tiến trình đạt đến các ngày kỷ niệm lớn tiếp theo</p>
+                        </div>
+                    </div>
+                    <span id="nextMilestoneBadge" class="text-xs font-bold px-3 py-1.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                        Mục tiêu: 1000 Ngày
+                    </span>
+                </div>
+
+                <!-- Main Target Progress Box -->
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-5 mb-6">
+                    <div class="flex justify-between items-center text-xs sm:text-sm font-semibold mb-2">
+                        <span id="milestoneProgressLabel" class="text-rose-200">Tiến độ đến 1000 Ngày</span>
+                        <span id="milestonePercentText" class="text-rose-300 font-bold">0%</span>
+                    </div>
+
+                    <!-- Bar -->
+                    <div class="w-full bg-black/50 h-3.5 rounded-full overflow-hidden p-0.5 border border-white/10">
+                        <div id="milestoneProgressBar" class="bg-gradient-to-r from-rose-600 via-pink-500 to-rose-300 h-full rounded-full transition-all duration-1000 ease-out shadow-lg shadow-rose-500/50" style="width: 0%"></div>
+                    </div>
+
+                    <div id="milestoneDaysDetail" class="flex justify-between items-center text-xs text-rose-300/70 mt-3 font-medium">
+                        <span>Đã đi được: -- ngày</span>
+                        <span>Còn lại: -- ngày</span>
+                    </div>
+                </div>
+
+                <!-- Milestone Badges Grid -->
+                <div id="milestoneGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    <!-- Dynamic rendering via JavaScript -->
+                </div>
+            </section>
+
+            <!-- Love Story Memory Timeline -->
+            <section class="glass-panel-dark rounded-3xl p-5 sm:p-8 shadow-xl border border-white/10">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-2xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                            <i class="fa-solid fa-camera-retro text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base sm:text-lg font-bold text-white">Nhật Ký Khoảnh Khắc</h3>
+                            <p class="text-xs text-rose-300/70">Những cột mốc đáng nhớ trong tình yêu</p>
+                        </div>
+                    </div>
+
+                    <button onclick="openAddMemoryModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-rose-500/30 transition active:scale-95 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Thêm Kỷ Niệm Mới</span>
+                    </button>
+                </div>
+
+                <!-- Timeline Spine Container -->
+                <div id="timelineContainer" class="space-y-6 sm:space-y-8 relative before:absolute before:inset-0 before:left-4 sm:before:left-1/2 before:-ml-px before:w-0.5 before:bg-gradient-to-b before:from-rose-500/80 before:via-pink-500/30 before:to-transparent">
+                    <!-- Dynamic rendering via JavaScript -->
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-xs text-rose-200/50 py-4 space-y-1 border-t border-white/5">
+            <p>Thiết kế dành riêng cho tình yêu của Hoàng <i class="fa-solid fa-heart text-rose-500"></i> Duyên</p>
+            <p>© <span id="yearCopy">2026</span> Đếm Ngày Yêu - Web được tạo bởi HoangDam.Keeb</p>
+        </footer>
+
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel-dark w-full max-w-lg rounded-3xl p-5 sm:p-8 border border-white/20 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+            
+            <div class="flex justify-between items-center border-b border-white/10 pb-4 mb-5">
+                <h3 class="text-lg sm:text-xl font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-sliders text-rose-400"></i>
+                    <span>Tùy Chỉnh Web Đếm Ngày</span>
+                </h3>
+                <button onclick="closeSettingsModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-rose-200 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="settingsForm" onsubmit="handleSaveSettings(event)" class="space-y-5">
+                
+                <!-- Start Date & Time Picker -->
+                <div>
+                    <label class="block text-xs font-semibold text-rose-300 uppercase tracking-wider mb-1.5">Ngày & Giờ Bắt Đầu Yêu</label>
+                    <input type="datetime-local" id="setStartDate" class="w-full rounded-xl px-4 py-2.5 text-sm glass-input" required>
+                    <p class="text-[11px] text-rose-200/60 mt-1">Chọn thời điểm chính xác hai bạn chính thức quen nhau.</p>
+                </div>
+
+                <!-- Person 1 Inputs -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                    <span class="text-xs font-bold text-rose-300 uppercase tracking-wider">Thông Tin Bạn Nam / Người 1</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] text-rose-200/80 mb-1">Tên Hiển Thị</label>
+                            <input type="text" id="setP1Name" class="w-full rounded-lg px-3 py-2 text-sm glass-input" required>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-rose-200/80 mb-1">Biệt Danh / Tag</label>
+                            <input type="text" id="setP1Nick" class="w-full rounded-lg px-3 py-2 text-sm glass-input">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-rose-200/80 mb-1">Ảnh Đại Diện (Đường dẫn `images/...` hoặc Tải ảnh từ máy)</label>
+                        <input type="text" id="setP1AvatarPath" placeholder="VD: images/ava1.jpg" class="w-full rounded-lg px-3 py-2 text-xs glass-input mb-2">
+                        <input type="file" id="setP1AvatarFile" accept="image/*" onchange="previewImageUpload(event, 'p1AvatarPreview')" class="w-full text-xs text-rose-200 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rose-500/30 file:text-rose-200 hover:file:bg-rose-500/40">
+                        <img id="p1AvatarPreview" class="w-12 h-12 rounded-full object-cover mt-2 hidden border border-white/30">
+                    </div>
+                </div>
+
+                <!-- Person 2 Inputs -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+                    <span class="text-xs font-bold text-rose-300 uppercase tracking-wider">Thông Tin Bạn Nữ / Người 2</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] text-rose-200/80 mb-1">Tên Hiển Thị</label>
+                            <input type="text" id="setP2Name" class="w-full rounded-lg px-3 py-2 text-sm glass-input" required>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-rose-200/80 mb-1">Biệt Danh / Tag</label>
+                            <input type="text" id="setP2Nick" class="w-full rounded-lg px-3 py-2 text-sm glass-input">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-rose-200/80 mb-1">Ảnh Đại Diện (Đường dẫn `images/...` hoặc Tải ảnh từ máy)</label>
+                        <input type="text" id="setP2AvatarPath" placeholder="VD: images/ava2.jpg" class="w-full rounded-lg px-3 py-2 text-xs glass-input mb-2">
+                        <input type="file" id="setP2AvatarFile" accept="image/*" onchange="previewImageUpload(event, 'p2AvatarPreview')" class="w-full text-xs text-rose-200 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rose-500/30 file:text-rose-200 hover:file:bg-rose-500/40">
+                        <img id="p2AvatarPreview" class="w-12 h-12 rounded-full object-cover mt-2 hidden border border-white/30">
+                    </div>
+                </div>
+
+                <!-- Audio File Path Config -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                    <span class="text-xs font-bold text-rose-300 uppercase tracking-wider">Cấu Hình Nhạc Nền</span>
+                    <label class="block text-[11px] text-rose-200/80">Đường dẫn file âm thanh (Mặc định trong thư mục `audio/`)</label>
+                    <input type="text" id="setAudioPath" placeholder="VD: audio/romantic_music.mp3" class="w-full rounded-lg px-3 py-2 text-xs glass-input">
+                    <p class="text-[10px] text-rose-200/50">Nếu không tìm thấy file nhạc, ứng dụng sẽ tự động phát giai điệu tổng hợp Web Audio API nhẹ nhàng.</p>
+                </div>
+
+                <!-- Custom Quote Input -->
+                <div>
+                    <label class="block text-xs font-semibold text-rose-300 uppercase tracking-wider mb-1.5">Lời Chúc / Trích Dẫn Tình Yêu</label>
+                    <textarea id="setLoveQuote" rows="2" class="w-full rounded-xl px-4 py-2.5 text-sm glass-input"></textarea>
+                </div>
+
+                <!-- Theme Selection -->
+                <div>
+                    <label class="block text-xs font-semibold text-rose-300 uppercase tracking-wider mb-1.5">Chủ Đề Giao Diện</label>
+                    <select id="setTheme" class="w-full rounded-xl px-4 py-2.5 text-sm glass-input">
+                        <option value="theme-rose" class="bg-gray-900 text-white">Đêm Hồng Lãng Mạn (Mặc định)</option>
+                        <option value="theme-twilight" class="bg-gray-900 text-white">Đêm Sao Lung Linh (Twilight)</option>
+                        <option value="theme-sunset" class="bg-gray-900 text-white">Chiều Tà Ấm Áp (Sunset Glow)</option>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" onclick="closeSettingsModal()" class="w-1/2 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold transition">Hủy</button>
+                    <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-rose-500/30 transition">Lưu Cài Đặt</button>
+                </div>
+
+            </form>
         </div>
     </div>
 
-    <div class="time">
-      <h2 class="days"><span>00</span>&nbsp;NGÀY</h2>
-      <p class="sup-time">
-        <span class="hour">10</span>:<span class="min">20</span>:<span class="second">16</span>
-      </p>
-    </div>
-    <p class="say-thank">Thén kìu !</p>
-  </div>
+    <!-- ADD MEMORY MODAL -->
+    <div id="memoryModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel-dark w-full max-w-md rounded-3xl p-5 sm:p-7 border border-white/20 shadow-2xl relative">
+            
+            <div class="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
+                <h3 class="text-base sm:text-lg font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-heart-circle-plus text-rose-400"></i>
+                    <span>Thêm Kỷ Niệm Mới</span>
+                </h3>
+                <button onclick="closeAddMemoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-rose-200 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
+            <form id="memoryForm" onsubmit="handleSaveMemory(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-rose-300 uppercase tracking-wider mb-1">Tiêu Đề Kỷ Niệm</label>
+                    <input type="text" id="memTitleInput" placeholder="Ví dụ: Chuyến du lịch biển đầu tiên..." class="w-full rounded-xl px-4 py-2 text-sm glass-input" required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-rose-300 uppercase tracking-wider mb-1">Ngày Kỷ Niệm</label>
+                    <input type="date" id="memDateInput" class="w-full rounded-xl px-4 py-2 text-sm glass-input" required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-rose-300 uppercase tracking-wider mb-1">Mô Tả / Cảm Xúc</label>
+                    <textarea id="memDescInput" rows="3" placeholder="Ghi lại cảm xúc hoặc kỉ niệm ngọt ngào..." class="w-full rounded-xl px-4 py-2 text-sm glass-input" required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-rose-300 uppercase tracking-wider mb-1">Hình Ảnh (Đường dẫn `images/...` hoặc Upload)</label>
+                    <input type="text" id="memImgPathInput" placeholder="VD: images/memory1.jpg" class="w-full rounded-lg px-3 py-1.5 text-xs glass-input mb-2">
+                    <input type="file" id="memImgFileInput" accept="image/*" onchange="previewImageUpload(event, 'memImgPreview')" class="w-full text-xs text-rose-200 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rose-500/30 file:text-rose-200 hover:file:bg-rose-500/40">
+                    <img id="memImgPreview" class="w-full h-28 object-cover rounded-xl mt-2 hidden border border-white/20">
+                </div>
+
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" onclick="closeAddMemoryModal()" class="w-1/2 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold transition">Hủy</button>
+                    <button type="submit" onsubmit="handleSaveMemory(event)" class="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-rose-500/30 transition">Lưu Kỷ Niệm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- Hidden HTML5 Audio Element for MP3 fallback/playback -->
+    <audio id="bgAudioPlayer" src="audio/love.mp3" loop preload="auto"></audio>
+<!-- Firebase App & Realtime Database SDK (v9 Compact) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="hdkeeblove.js"></script>
 </body>
 </html>
