@@ -1,187 +1,127 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400&subset=vietnamese');
+/* ==========================================
+   CSS Reset & Base
+   ========================================== */
+* {
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Roboto', sans-serif;;
-  background-color: #f8f8f8;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  min-height: 100vh;
-  color: rgba(0, 0, 0, 0.653);
-  background-image: linear-gradient(120deg, #fccb90 0%, #d57eeb 100%);
-  text-shadow: 0 .2px .3px rgba(0, 0, 0, 0.353);
-  background-size: cover;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
+    background-color: #0b0714;
+    color: #ffffff;
+    min-height: 100vh;
 }
 
-img {
-  max-width: 100%;
+/* ==========================================
+   Glassmorphism Classes
+   ========================================== */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 40px -10px rgba(244, 63, 94, 0.18);
 }
 
-.box {
-  background-color: white;
-  box-shadow: 0 3px 6px rgba(0,0,0, .1);
-  padding: 1rem;
-  width: 60%;
-  border-radius: 26px;
+.glass-panel-dark {
+    background: rgba(15, 10, 25, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
 }
 
-.about {
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  margin-bottom: 3rem;
-  margin-top: 10px;
-  position: relative;
+.glass-input {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    transition: all 0.25s ease;
 }
 
-.info:first-child {
-  flex-grow: 1;
+.glass-input:focus {
+    outline: none;
+    border-color: #f43f5e;
+    background: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 0 15px rgba(244, 63, 94, 0.3);
 }
 
-.info {
-  display: flex;
-  align-items: center;
+/* ==========================================
+   Animations
+   ========================================== */
+@keyframes heartPulse {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.18); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.18); }
+    70% { transform: scale(1); }
 }
 
-.info:last-child .avatar {
-  order: 2;
+.animate-heart-pulse {
+    animation: heartPulse 1.8s infinite ease-in-out;
 }
 
-.info:last-child .details {
-  text-align: right;
+@keyframes floatSlow {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
 }
 
-.avatar {
-  width: 70px;
-  border-radius: 50%;
+.animate-float {
+    animation: floatSlow 4s ease-in-out infinite;
 }
 
-.info .details {
-  margin: 0 1rem;
+/* ==========================================
+   Text Effects
+   ========================================== */
+.text-glow {
+    text-shadow: 0 0 18px rgba(244, 63, 94, 0.7), 0 0 35px rgba(244, 63, 94, 0.35);
 }
 
-.info .details p {
-  margin: 4px;
+.text-glow-subtle {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-.name {
-  font-size: 15px;
-  text-transform: uppercase;
+/* ==========================================
+   Theme Backgrounds
+   ========================================== */
+.theme-rose {
+    background: radial-gradient(circle at 50% 10%, #360f22 0%, #15091a 60%, #09040d 100%);
+}
+.theme-twilight {
+    background: radial-gradient(circle at 50% 10%, #171c3b 0%, #0f1026 60%, #050612 100%);
+}
+.theme-sunset {
+    background: radial-gradient(circle at 50% 10%, #3d1b18 0%, #210a12 60%, #0c0407 100%);
 }
 
-.born {
-  font-weight: 300;
+/* ==========================================
+   Canvas Particle Styling
+   ========================================== */
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
 }
 
-.time {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* ==========================================
+   Responsive Custom Scrollbar
+   ========================================== */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
 }
-
-.time h2, .time p {
-  margin: 0;
-  margin-bottom: 4px;
+::-webkit-scrollbar-track {
+    background: rgba(10, 6, 18, 0.8);
 }
-
-.time h2 {
-  font-size: 2.8rem;
+::-webkit-scrollbar-thumb {
+    background: rgba(244, 63, 94, 0.4);
+    border-radius: 999px;
 }
-
-.time p {
-  font-size: 1.5rem;
-}
-
-.sup-time {
-  font-weight: 300;
-}
-
-.say-thank {
-  text-align: center;
-  margin-top: 6rem;
-  font-weight: 100;
-  color: tomato;
-  opacity: .8;
-  margin-bottom: 0;
-}
-
-.title {
-  opacity: .7;
-}
-
-.heart {
-  position: absolute;
-  top: calc(50% - 25px);
-  left: calc(50% - 25px);
-  width: 50px;
-  transform-origin: 50% 50%;
-  opacity: .8;
-  animation: heartBeat 1s ease-in-out infinite;
-}
-
-@keyframes heartBeat {
-  0% {
-    transform: scale(.9);
-  }
-
-  45% {
-    transform: scale(1.1);
-  }
-
-  70% {
-    transform: scale(.9);
-  }
-
-  100% {
-    transform: scale(.9);
-  }
-}
-
-@media (max-width: 997px) {
-  .box {
-    width: 84%;
-    margin-bottom: 2rem;
-  }
-
-  .title {
-    margin: 2rem 0 1rem 0;
-    font-size: 18px;
-  }
-  
-  .about {
-    flex-direction: column;
-    /* align-items: flex-start; */
-    padding: 0;
-  }
-
-  .info {
-    flex-direction: column;
-  }
-
-  .avatar {
-    margin-bottom: .5rem;
-  }
-
-  .info p {
-    text-align: center;
-    margin: 10px 0 0 0;
-    font-size: 13px;
-  }
-
-  .info:last-child .avatar {
-    order: 0;
-  }
-
-  .heart {
-    position: relative;
-    margin: 1.4rem 0;
-  }
-
-  .say-thank {
-    margin-top: 2rem;
-  }
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(244, 63, 94, 0.8);
 }
